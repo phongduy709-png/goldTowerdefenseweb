@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "server2.js",
   "scripts": {
-    "start": "node server2.js"
+    "start": "node download-images.js && node server2.js"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "tar": "^7.4.3"
   },
   "engines": {
     "node": ">=18.0.0"
