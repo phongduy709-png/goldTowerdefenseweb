@@ -1,0 +1,51 @@
+    <script>
+    // ============ FULLSCREEN + LANDSCAPE LOCK ============
+    (function() {
+        // 1. Request fullscreen khi user tap lần đầu
+        var fsRequested = false;
+        function requestFS() {
+            if (fsRequested) return;
+            fsRequested = true;
+            var el = document.documentElement;
+            try {
+                if (el.requestFullscreen) {
+                    el.requestFullscreen().catch(function(){});
+                } else if (el.webkitRequestFullscreen) {
+                    el.webkitRequestFullscreen();
+                } else if (el.mozRequestFullScreen) {
+                    el.mozRequestFullScreen();
+                } else if (el.msRequestFullscreen) {
+                    el.msRequestFullscreen();
+                }
+            } catch(e) {}
+        }
+        document.addEventListener('click', requestFS, { once: true });
+        document.addEventListener('touchstart', requestFS, { once: true });
+
+        // 2. Lock orientation landscape
+        function lockLandscape() {
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(function(){});
+                }
+            } catch(e) {}
+        }
+        setTimeout(lockLandscape, 500);
+        setTimeout(lockLandscape, 2000);
+
+        // 3. Log mode
+        var isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+                    window.navigator.standalone === true;
+        console.log('[FS] Mode:', isPWA ? 'PWA (fullscreen sẵn)' : 'Browser (cần tap để fullscreen)');
+
+        // 4. Fit full screen khi resize/xoay
+        function fitScreen() {
+            var d = document.getElementById('div_body');
+            if (!d) return;
+        }
+        window.addEventListener('resize', fitScreen);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(fitScreen, 300);
+        });
+    })();
+    </script>

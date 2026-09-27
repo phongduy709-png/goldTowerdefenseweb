@@ -1,0 +1,250 @@
+{
+	"rustoreApkBlockDate" : "2026-01-31",
+	"adpopcornRVID" : "QGHgKSzUwaiSRf5",
+	"adpopcornInterID" : "qKuQqx2gF47f55u",
+	"adRewardId": "ca-app-pub-5020385014324714/4300304133",
+	"adRewardOnFailed": false,
+  "adRewardOnFailedMsg": "Ad loading failed. Please try again after a while.",
+
+  "adInterId": "ca-app-pub-5020385014324714/9552630812",
+ 	"adInterOnFailed": true,
+  "adInterOnFailedMsg": "Ad loading failed. Please try again after a while.",
+	"moreGameAppVisible" : "VISIBLE",
+
+	"moreGameApp1" : "1",
+	"moreGameApp2" : "5",
+	"moreGameAppUrl1" : "https://play.google.com/store/apps/details?id=busidol.mobile.eldorado",
+	"moreGameAppUrl2" : "https://play.google.com/store/apps/details?id=busidol.mobile.tank",
+
+	"appLinkUri": "https://play.google.com/store/apps/details?id=busidol.mobile.tower",
+  "updateNoteKR": "최신버전 업데이트가 필요합니다.\n업데이트 버튼이 보이지 않는다면\n제거 후 재설치 하세요.",
+  "updateNoteEN": "Please update to the latest version\nIf you don't see the Update button,\nUninstall and then reinstall.",
+	"paymentTokenMin" : 50,
+	"webClientId" : "954307965924-8dmhjpgssq4qquu2v7he0dnkkdt2ccpe.apps.googleusercontent.com",
+  "policyUrl": "http://busidol.com/term_n_condition/Personal_info_policy_kr.html",
+	"termsUrlService": "http://busidol.com/term_n_condition/Term_of_service_kr.html",
+  "termsUrlPersonal": "http://busidol.com/term_n_condition/Personal_info_policy_kr.html",
+
+	"webUrl" : "file:///android_asset/TOWER_20211019/index.html",
+	/*"webUrl" : "http://211.253.26.47/mnt/TOWERDEFENCE_AMO_traffic/source_20220503",*/
+	"soundPath" : "TOWER_20211019/sound/",
+	"serverUrl" : "http://211.253.26.47:8093/TOWERDEFENCE_AMO/Android/",
+	"bDeleteCache" : false,
+	"refreshUrl" : "javascript:location.reload(true);",
+	"keyMap" : [
+
+		{
+			"models" : ["BHX-UH200", "BKO-UH200", "BHX-UH400", "BKO-UH400", "BHX-UH600", "BKO-UH600", "BKO-AI700"],
+			"LEFT" : 21,
+			"RIGHT" : 22,
+			"UP" : 19,
+			"DOWN" : 20,
+			"OK" : 23,
+
+			"NUM_00" : 7,
+			"NUM_01" : 8,
+			"NUM_02" : 9,
+			"NUM_03" : 10,
+			"NUM_04" : 11,
+			"NUM_05" : 12,
+			"NUM_06" : 13,
+			"NUM_07" : 14,
+			"NUM_08" : 15,
+			"NUM_09" : 16,
+
+			"CHAR_STAR" : 67,
+			"CHAR_HASH" : 18,
+
+			"EXIT" : 142,
+			"BACK" : 4,
+
+			"RED" : 89,
+			"GREEN" : 86,
+			"YELLOW" : 85,
+			"BLUE" : 90
+
+		},
+		{
+			"models" : ["BAS-AT800", "BKO-AT800"],
+			"LEFT" : 21,
+			"RIGHT" : 22,
+			"UP" : 19,
+			"DOWN" : 20,
+			"OK" : 23,
+
+			"NUM_00" : 7,
+			"NUM_01" : 8,
+			"NUM_02" : 9,
+			"NUM_03" : 10,
+			"NUM_04" : 11,
+			"NUM_05" : 12,
+			"NUM_06" : 13,
+			"NUM_07" : 14,
+			"NUM_08" : 15,
+			"NUM_09" : 16,
+
+			"CHAR_STAR" : 67,
+			"CHAR_HASH" : 18,
+
+			"EXIT" : 285,
+			"BACK" : 4,
+
+			"RED" : 89,
+			"GREEN" : 86,
+			"YELLOW" : 85,
+			"BLUE" : 90
+			
+		},
+		{
+			"models" : [ "BFX-AT100", "BID-AI100", "BIP-AI100", "BFX-UH200"],
+			"LEFT" : 21,
+			"RIGHT" : 22,
+			"UP" : 19,
+			"DOWN" : 20,
+			"OK" : 23,
+
+			"NUM_00" : 7,
+			"NUM_01" : 8,
+			"NUM_02" : 9,
+			"NUM_03" : 10,
+			"NUM_04" : 11,
+			"NUM_05" : 12,
+			"NUM_06" : 13,
+			"NUM_07" : 14,
+			"NUM_08" : 15,
+			"NUM_09" : 16,
+
+			"CHAR_STAR" : 67,
+			"CHAR_HASH" : 18,
+
+			"EXIT" : 385,
+			"BACK" : 4,
+
+			"RED" : 89,
+			"GREEN" : 86,
+			"YELLOW" : 85,
+			"BLUE" : 90
+
+		}
+
+
+	],
+	
+	"webKeyMap" : {
+
+		"LEFT" : 37,
+		"RIGHT" : 39,
+		"UP" : 38,
+		"DOWN" : 40,
+		"OK" : 13,
+
+		"NUM_00" : 48,
+		"NUM_01" : 49,
+		"NUM_02" : 50,
+		"NUM_03" : 51,
+		"NUM_04" : 52,
+		"NUM_05" : 53,
+		"NUM_06" : 54,
+		"NUM_07" : 55,
+		"NUM_08" : 56,
+		"NUM_09" : 57,
+
+		"CHAR_STAR" : 8,
+		"CHAR_HASH" : 18,
+
+		"EXIT" : 142,
+		"BACK" : 4,
+
+		"RED" : 227,
+		"GREEN" : 178,
+		"YELLOW" : 179,
+		"BLUE" : 228
+
+	},
+	"webSetting" : [
+		true,		/*setAllowFileAccess*/
+		true,/*setAllowContentAccess*/
+		true,/*setAllowFileAccessFromFileURLs*/
+		true,/*setAllowUniversalAccessFromFileURLs*/
+
+		true,/*setJavaScriptCanOpenWindowsAutomatically*/
+		true,/*setLoadsImagesAutomatically*/
+		true,/*setUseWideViewPort*/
+		false,/*setSupportZoom*/
+		2,/*setCacheMode*/
+		false,/*setAppCacheEnabled*/
+		true,/*setDomStorageEnabled*/
+		"app",/*setUserAgentString*/
+		false,/*setBuiltInZoomControls*/
+		false,/*setAsetSupportZoomllowFileAccess*/
+		true,/*setGeolocationEnabled*/
+		false,/*setMediaPlaybackRequiresUserGesture*/
+		true,/*setInitialScale*/
+		true,/*setLoadWithOverviewMode*/
+	],
+	"pauseExitModels" : [
+	    "BID-AI100",
+	    "BIP-AI100",
+	    "BKO-S200",
+	    "BHX-S100"
+	  ],
+	"vassUrlCancelPpm" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=cancelPurchasePpmProduct",
+	"vassUrlCheckPpm" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=checkPurchasePpmProduct",
+	"vassUrlPurchasePpm" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=purchasePpxProduct",
+	"vassUrlPurchasePpv" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=purchasePpvProduct",
+	"vassUrlPurchasePw" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=checkPurchasePw",
+	"vassUrlAdult" : "http://vass.hanafostv.com:8080/service/serviceAction.hm?m=checkAdult",
+	"networkTimeout" : 20000,
+	"keyBlockModels" : [
+      {
+        "model" : "BHX-UH200",
+        "keys" : []
+      },
+      {
+        "model" : "BKO-UH200",
+        "keys" : []
+      },
+      {
+        "model" : "BHX-UH400",
+        "keys" : []
+      },
+      {
+        "model" : "BKO-UH400",
+        "keys" : []
+      },
+      {
+        "model" : "BHX-UH600",
+        "keys" : []
+      },
+      {
+        "model" : "BKO-UH600",
+        "keys" : []
+      },
+      {
+        "model" : "BKO-AI700",
+        "keys" : []
+      },
+      {
+        "model" : "BAS-AT800",
+        "keys" : [84]
+      },
+      {
+        "model" : "BKO-AT800",
+        "keys" : [84]
+      },
+      {
+        "model" : "BFX-AT100",
+        "keys" : [84]
+      },
+      {
+        "model" : "BID-AI100",
+        "keys" : [84]
+      },
+      {
+        "model": "BIP-AI100",
+        "keys": [
+          84
+        ]
+      }
+  ]
+}

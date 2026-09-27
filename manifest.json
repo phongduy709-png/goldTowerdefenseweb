@@ -1,0 +1,10 @@
+{
+    "name": "Gold Tower Defense",
+    "short_name": "Gold TD",
+    "start_url": "./game.html?player",
+    "scope": "./",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "#16213e",
+    "theme_color": "#16213e"
+}

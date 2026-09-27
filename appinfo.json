@@ -1,0 +1,14 @@
+{
+  "id": "com.busidol.tower.lgwebos",
+  "version": "2.0.0",
+  "vendor": "Busidol",
+  "type": "web",
+  "main": "index.html",
+  "title": "Gold Tower Defence",
+  "icon": "icon/icon_80x80.png",
+  "largeIcon": "icon/icon_130x130.png",
+  "resolution": "1280x720",
+  "supportPortraitMode": true,
+  "supportTouchMode": "full",
+  "disableBackHistoryAPI": true
+}

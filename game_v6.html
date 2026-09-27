@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Tower Defence</title>
+    <link rel="stylesheet" href="css/Main.css">
+    
+    <script>
+    // PATCH CỰC SỚM
+    window.glo = window.glo || {};
+    window.glo.app_release = 'DEBUG';
+    window.glo.platform = 'AMO';
+    window.glo.PLATFORM = window.glo.PLATFORM || {ATV:'ATV',AMO:'AMO',SKB:'SKB',KT:'KT',TOSS:'TOSS',IOS:'IOS',BAL:'BAL',GH:'GH',AZE:'AZE',HCN:'HCN',CJH:'CJH',DLIVE:'DLIVE',LG:'LG',SS:'SS',LGH:'LGH'};
+    
+    try {
+        var _appRelease = 'DEBUG';
+        Object.defineProperty(window.glo, 'app_release', {
+            get: function() { return _appRelease; },
+            set: function(v) { if (v === 'RELEASE') { console.log('[LOCK] Chặn RELEASE'); return; } _appRelease = v; },
+            configurable: true
+        });
+    } catch(e) {}
+    
+    window.AndroidBridge = {
+        getDuid: function() { return localStorage.getItem('gtd_uid') || 'user_001'; },
+        hideSystemUI: function() { return true; },
+        showSystemUI: function() { return true; },
+        setKeyBlock: function() { return true; },
+        playBgm: function() { return true; },
+        vibrate: function() { return true; },
+        exit: function() { return true; },
+        finish: function() { return true; },
+        getLang: function() { return 'en'; }
+    };
+    
+    window.S_MOBILE_CONNECT_AMO = {
+        flag: 1,
+        info: { uniq_id: 'user_001', host_id: 'user_001' },
+        check: function(cb) { this.flag = 1; if (typeof cb === 'function') setTimeout(cb, 50); return true; }
+    };
+    
+    if (!localStorage.getItem("gtd_uid")) localStorage.setItem("gtd_uid", "user_001");
+    window.gEntrix = { host_id: "user_001", uniq_id: "user_001" };
+    window.USER = { level: 1, lang: 3, sound_bgm: 1, sound_effect: 1, safemode: 0, chul_date: "2026-04-26", chul_num: 1, guide_line: 0, gacha_time: 0, level_exp: 0, is_numkey: 0, vibration: 0 };
+    window.util = window.util || {};
+    window.util.get_gichapo = function() { return "LOCAL_TOKEN"; };
+    window.util.log = function() {};
+    
+    try {
+        if (!document.defaultView) Object.defineProperty(document, 'defaultView', { get: function() { return window; }, configurable: true });
+    } catch(e) {}
+    
+    console.log('🔒 [EARLY] app_release = DEBUG (locked)');
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        #div_body { width: 100vw; height: 100vh; position: relative; background: #16213e; }
+        #SafeZone, #S_ERROR_POPUP_div, #MEM_TEST { display: none; }
+        
+        /* LOG PANEL */
+        #error-panel {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 30vh;
+            background: rgba(0, 0, 0, 0.95);
+            color: #0f0;
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 2147483647;
+            overflow-y: auto;
+            border-top: 3px solid #0f0;
+            display: block;
+        }
+        #error-panel-header {
+            position: sticky;
+            top: 0;
+            background: #000;
+            padding: 5px 10px;
+            border-bottom: 1px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #error-panel-header span { color: #0f0; font-weight: bold; font-size: 12px; }
+        #error-panel-header button {
+            border: none;
+            padding: 4px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        #btn-copy { background: #0f0; color: #000; }
+        #btn-clear { background: #f80; color: #000; }
+        #btn-close { background: #f00; color: #fff; }
+        #error-list { padding: 5px 10px; }
+        #error-list .log-item { color: #0f0; padding: 2px 0; word-break: break-all; }
+        #error-list .err-item { color: #f44; padding: 2px 0; word-break: break-all; }
+        #error-list .warn-item { color: #fa0; padding: 2px 0; word-break: break-all; }
+        #error-list .info-item { color: #0af; padding: 2px 0; word-break: break-all; }
+        
+        /* CONSOLE PANEL */
+        #console-panel {
+            position: fixed;
+            top: 10px; left: 10px; right: 10px;
+            height: 280px;
+            background: rgba(0, 0, 0, 0.95);
+            color: #0f0;
+            font-family: monospace;
+            font-size: 11px;
+            z-index: 2147483646;
+            border: 2px solid #0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            display: block;
+        }
+        #console-panel-header {
+            background: #0f0;
+            color: #000;
+            padding: 5px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        #console-panel-header button {
+            border: none;
+            padding: 4px 12px;
+            margin-left: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        #console-input {
+            width: 100%;
+            height: 35px;
+            background: #111;
+            color: #0f0;
+            border: none;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        #console-output {
+            height: 195px;
+            overflow-y: auto;
+            padding: 8px;
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            box-sizing: border-box;
+        }
+        
+        /* Toggle buttons */
+        #toggle-error-panel {
+            position: fixed;
+            bottom: 10px; right: 10px;
+            background: #08f;
+            color: #fff;
+            border: 3px solid #fff;
+            padding: 10px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2147483646;
+            font-size: 14px;
+            display: none;
+        }
+        #toggle-console-panel {
+            position: fixed;
+            top: 10px; left: 10px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2147483645;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* CONTROL PANEL */
+        #ctrl-panel {
+            position: fixed;
+            top: 10px; right: 10px;
+            width: 340px;
+            max-height: 92vh;
+            background: rgba(10,10,10,0.97);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            z-index: 2147483645;
+            color: #0f0;
+            font-family: monospace;
+            font-size: 11px;
+            overflow-y: auto;
+            display: none;
+        }
+        #ctrl-panel .cp-header {
+            background: #ffd700;
+            color: #000;
+            padding: 6px 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        #ctrl-panel .cp-body { padding: 10px; }
+        #ctrl-panel label { display: block; color: #888; margin: 6px 0 3px; font-size: 10px; }
+        #ctrl-panel input, #ctrl-panel textarea {
+            width: 100%;
+            background: #000;
+            color: #0f0;
+            border: 1px solid #333;
+            padding: 5px;
+            font-family: monospace;
+            font-size: 11px;
+            border-radius: 3px;
+        }
+        #ctrl-panel textarea { resize: vertical; }
+        #ctrl-panel .cp-title {
+            color: #ffd700;
+            font-weight: bold;
+            margin: 12px 0 6px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+        #ctrl-panel .cp-title:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+        #ctrl-panel button {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 4px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        #ctrl-toggle {
+            position: fixed;
+            top: 10px; right: 10px;
+            background: #ffd700;
+            color: #000;
+            border: 2px solid #000;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2147483644;
+            font-size: 13px;
+        }
+        #cp-log {
+            background: #000;
+            color: #0f0;
+            border: 1px solid #333;
+            padding: 6px;
+            max-height: 180px;
+            overflow: auto;
+            font-size: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border-radius: 3px;
+            margin-top: 6px;
+        }
+    </style>
+<script src="gmail_panel.js"></script>
+</head>
+<body onload="if(typeof Main!=='undefined'&&Main.on_load)try{Main.on_load();}catch(e){console.error('Main.on_load:',e.message);}" 
+      onkeydown="if(typeof Main!=='undefined'&&Main.key_down)try{Main.key_down(event);}catch(e){}"
+      scroll="no" ondragstart="return false">
+
+    <!-- LOG PANEL -->
+    <div id="error-panel">
+        <div id="error-panel-header">
+            <span>📋 LOG: <span id="err-count">0</span></span>
+            <span>
+                <button id="btn-copy" onclick="window.copyErrors()">📋 COPY</button>
+                <button id="btn-clear" onclick="window.clearErrors()">🗑️ CLEAR</button>
+                <button id="btn-close" onclick="window.toggleErrorPanel(false)">✕</button>
+            </span>
+        </div>
+        <div id="error-list"></div>
+    </div>
+    <button id="toggle-error-panel" onclick="window.toggleErrorPanel(true)">📋 0</button>
+
+    <!-- CONSOLE PANEL -->
+    <div id="console-panel">
+        <div id="console-panel-header">
+            <span>📟 CONSOLE - Dán JS + Enter</span>
+            <span>
+                <button onclick="window.copyConsoleOutput()" style="background:#08f;color:#fff;">📋 COPY</button>
+                <button onclick="window.clearConsoleOutput()" style="background:#f80;color:#000;">🗑️ CLEAR</button>
+                <button onclick="window.toggleConsolePanel(false)" style="background:#f00;color:#fff;">✕</button>
+            </span>
+        </div>
+        <textarea id="console-input" placeholder="Dán lệnh JS vào đây rồi nhấn Enter..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();window.runConsoleInput();}"></textarea>
+        <div id="console-output"></div>
+    </div>
+    <button id="toggle-console-panel" onclick="window.toggleConsolePanel(true)">📟 CONSOLE</button>
+
+    <!-- CONTROL PANEL -->
+    <div id="ctrl-panel">
+        <div class="cp-header">
+            <span>🎮 CONTROL PANEL</span>
+            <button onclick="document.getElementById('ctrl-panel').style.display='none';document.getElementById('ctrl-toggle').style.display='block';" style="background:#f00;color:#fff;border:none;padding:2px 8px;cursor:pointer;border-radius:3px;font-weight:bold;">✕</button>
+        </div>
+
+        <div class="cp-body">
+            <!-- TOWER -->
+            <div class="cp-title">🗼 TOWER</div>
+            <label>SELECTED_TOWER:</label>
+            <input id="cp-selected-tower" placeholder="5037,5039,5040,5001,6028">
+            
+            <label>BOU_TOWER:</label>
+            <textarea id="cp-bou-tower" rows="4" placeholder="6032:1:1,6028:1:2,..."></textarea>
+            
+            <div>
+                <button onclick="CP.loadAll()" style="background:#08f;color:#fff;">📥 Load</button>
+                <button onclick="CP.lapThap()" style="background:#0f0;color:#000;">🔨 LẮP</button>
+                <button onclick="CP.thaoThap()" style="background:#f44;color:#fff;">💥 THÁO</button>
+            </div>
+
+            <!-- HERO -->
+            <div class="cp-title">🦸 HERO</div>
+            <label>SELECTED_HERO:</label>
+            <input id="cp-selected-hero" placeholder="38,41,50,53,56">
+            
+            <label>SELECTED_HERO_MAX:</label>
+            <input id="cp-hero-max" value="5">
+            
+            <label>BOU_HERO:</label>
+            <textarea id="cp-bou-hero" rows="3" placeholder="1:70:77519326:1,2:70:77519326:1,..."></textarea>
+            
+            <div>
+                <button onclick="CP.saveHero()" style="background:#0f0;color:#000;">💾 Lưu Hero</button>
+            </div>
+
+            <!-- LOG -->
+            <div class="cp-title">📨 KẾT QUẢ</div>
+            <pre id="cp-log">Sẵn sàng...</pre>
+        </div>
+    </div>
+    <button id="ctrl-toggle" onclick="document.getElementById('ctrl-panel').style.display='block';this.style.display='none';">🎮 CONTROL</button>
+
+    <img id="SafeZone" alt="">
+    <div id="div_body"></div>
+    <div id="S_ERROR_POPUP_div"></div>
+    <div id="MEM_TEST"></div>
+
+    <script>
+    // ============ LOG PANEL LOGIC ============
+    window.__logs = [];
+    window.__logCount = 0;
+    
+    window.addLog = function(msg, type) {
+        type = type || 'log';
+        window.__logCount++;
+        window.__logs.push('[' + new Date().toLocaleTimeString() + '] ' + msg);
+        
+        var list = document.getElementById('error-list');
+        if (list) {
+            var div = document.createElement('div');
+            div.className = type === 'error' ? 'err-item' : (type === 'warn' ? 'warn-item' : 'log-item');
+            div.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+        }
+        
+        var cnt = document.getElementById('err-count');
+        if (cnt) cnt.textContent = window.__logCount;
+        
+        var toggle = document.getElementById('toggle-error-panel');
+        if (toggle) toggle.textContent = '📋 ' + window.__logCount;
+    };
+    
+    window.copyErrors = function() {
+        var text = window.__logs.join('\n');
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() { alert('✅ Copied ' + window.__logs.length + ' lines'); });
+        } else {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('✅ Copied ' + window.__logs.length + ' lines');
+        }
+    };
+    
+    window.clearErrors = function() {
+        document.getElementById('error-list').innerHTML = '';
+        window.__logs = [];
+        window.__logCount = 0;
+        document.getElementById('err-count').textContent = '0';
+    };
+    
+    window.toggleErrorPanel = function(show) {
+        var panel = document.getElementById('error-panel');
+        var toggle = document.getElementById('toggle-error-panel');
+        if (show) { panel.style.display = 'block'; toggle.style.display = 'none'; }
+        else { panel.style.display = 'none'; toggle.style.display = 'block'; }
+    };
+    
+    // Override console.log/error
+    var _origLog = console.log;
+    var _origError = console.error;
+    var _origWarn = console.warn;
+    console.log = function() {
+        var msg = Array.prototype.slice.call(arguments).map(function(a) {
+            if (typeof a === 'object') { try { return JSON.stringify(a).substring(0, 300); } catch(e) { return String(a); } }
+            return String(a);
+        }).join(' ');
+        window.addLog(msg, 'log');
+        _origLog.apply(console, arguments);
+    };
+    console.error = function() {
+        var msg = Array.prototype.slice.call(arguments).join(' ');
+        window.addLog('❌ ' + msg, 'error');
+        _origError.apply(console, arguments);
+    };
+    console.warn = function() {
+        var msg = Array.prototype.slice.call(arguments).join(' ');
+        window.addLog('⚠️ ' + msg, 'warn');
+        _origWarn.apply(console, arguments);
+    };
+    
+    window.onerror = function(msg, url, line) {
+        window.addLog('❌ ERROR L' + line + ': ' + msg, 'error');
+        return true;
+    };
+    
+    // ============ CONSOLE PANEL LOGIC ============
+    window.__consoleBuffer = [];
+    
+    window.runConsoleInput = function() {
+        var input = document.getElementById('console-input');
+        var code = input.value.trim();
+        if (!code) return;
+        
+        window.consoleOutput('>>> ' + code);
+        input.value = '';
+        
+        try {
+            var result = eval(code);
+            if (result !== undefined) {
+                var str = typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result);
+                window.consoleOutput('<<< ' + str);
+            }
+        } catch(e) {
+            window.consoleOutput('❌ Lỗi: ' + e.message);
+        }
+    };
+    
+    window.consoleOutput = function(msg) {
+        window.__consoleBuffer.push(msg);
+        var out = document.getElementById('console-output');
+        if (out) {
+            var div = document.createElement('div');
+            div.textContent = msg;
+            out.appendChild(div);
+            out.scrollTop = out.scrollHeight;
+        }
+    };
+    
+    window.copyConsoleOutput = function() {
+        var text = window.__consoleBuffer.join('\n');
+        if (!text) { alert('Không có output'); return; }
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(function() { alert('✅ Copied ' + window.__consoleBuffer.length + ' lines'); });
+        }
+    };
+    
+    window.clearConsoleOutput = function() {
+        document.getElementById('console-output').innerHTML = '';
+        window.__consoleBuffer = [];
+    };
+    
+    window.toggleConsolePanel = function(show) {
+        var panel = document.getElementById('console-panel');
+        var toggle = document.getElementById('toggle-console-panel');
+        if (show) { panel.style.display = 'block'; toggle.style.display = 'none'; }
+        else { panel.style.display = 'none'; toggle.style.display = 'block'; }
+    };
+    
+    console.log('✅ Console + Log panels ready');
+    </script>
+
+    <!-- ============ CONTROL PANEL LOGIC ============ -->
+    <script>
+    window.CP = {
+        log: function(msg) {
+            var el = document.getElementById('cp-log');
+            if (!el) { console.log('[CP]', msg); return; }
+            var t = new Date().toLocaleTimeString();
+            el.textContent = "[" + t + "] " + msg + "\n" + el.textContent;
+        },
+
+        loadAll: async function() {
+            try {
+                this.log("⏳ Loading...");
+                var res = await fetch("/bridge-request", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: "{}"
+                });
+                var data = await res.json();
+                window.__userData = data;
+                var V = data.VALUE;
+
+                document.getElementById('cp-selected-tower').value = V.tower.value.selected_tower || "";
+                document.getElementById('cp-bou-tower').value = V.tower.value.bou_tower || "";
+                document.getElementById('cp-selected-hero').value = V.hero.value.selected_hero || "";
+                document.getElementById('cp-hero-max').value = V.hero.value.selected_hero_max || "5";
+                document.getElementById('cp-bou-hero').value = V.hero.value.bou_hero || "";
+
+                this.log("✅ Load OK | User: " + V.normal.value.USER_NAME + " | Tower: " + (V.tower.value.selected_tower || "").split(",").length + " selected");
+            } catch(e) {
+                this.log("❌ Load: " + e.message);
+            }
+        },
+
+        lapThap: async function() {
+            var selected = document.getElementById('cp-selected-tower').value.trim();
+            var bou = document.getElementById('cp-bou-tower').value.trim();
+            if (!selected) { this.log("⚠️ SELECTED_TOWER rỗng"); return; }
+
+            this.log("🔨 LẮP ⏳ Gửi lên server2...");
+            try {
+                var res = await fetch("/api/lap-thap", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        UNIQ_ID: window.__userData && window.__userData.VALUE.normal.value.UNIQ_ID,
+                        HOST_ID: window.__userData && window.__userData.VALUE.normal.value.HOST_ID,
+                        SELECTED_TOWER: selected,
+                        BOU_TOWER: bou,
+                        COMMENT: "Lắp " + selected.split(",").length + " tháp"
+                    })
+                });
+                var data = await res.json();
+                if (data.ok) {
+                    this.log("✅ LẮP THÀNH CÔNG!\n\n📤 Payload gửi đi:\n" + JSON.stringify(data.payload, null, 2) + "\n\n📥 Kết quả từ node -e:\n" + (data.output || "(không có)"));
+                } else {
+                    this.log("❌ LẮP LỖI: " + (data.error || "unknown") + "\n" + (data.stderr || ""));
+                }
+                await this.loadAll();
+            } catch(e) { this.log("❌ " + e.message); }
+        },
+
+        thaoThap: async function() {
+            var selected = document.getElementById('cp-selected-tower').value.trim();
+            var bou = document.getElementById('cp-bou-tower').value.trim();
+            if (!selected) { this.log("⚠️ SELECTED_TOWER rỗng"); return; }
+
+            var ids = selected.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+            var input = prompt(
+                "Nhập ID muốn THÁO (cách nhau dấu phẩy)\n" +
+                "Để TRỐNG = tháo TẤT CẢ\n\n" +
+                "Đang có: " + ids.join(", "),
+                ""
+            );
+            if (input === null) return;
+
+            var toRemove = input.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+            var removeAll = (toRemove.length === 0);
+
+            this.log("💥 THÁO ⏳ Gửi lên server2...");
+            this.log("   → Tháo: " + (removeAll ? "TẤT CẢ" : toRemove.join(",")));
+
+            try {
+                var res = await fetch("/api/thao-thap", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        UNIQ_ID: window.__userData && window.__userData.VALUE.normal.value.UNIQ_ID,
+                        HOST_ID: window.__userData && window.__userData.VALUE.normal.value.HOST_ID,
+                        SELECTED_TOWER: selected,
+                        BOU_TOWER: bou,
+                        REMOVE_IDS: toRemove.join(","),
+                        REMOVE_ALL: removeAll,
+                        COMMENT: removeAll ? "Tháo TẤT CẢ" : ("Tháo: " + toRemove.join(","))
+                    })
+                });
+                var data = await res.json();
+                if (data.ok) {
+                    this.log("✅ THÁO THÀNH CÔNG!\n\n📤 Payload gửi đi:\n" + JSON.stringify(data.payload, null, 2) + "\n\n📥 Kết quả từ node -e:\n" + (data.output || "(không có)"));
+                } else {
+                    this.log("❌ THÁO LỖI: " + (data.error || "unknown") + "\n" + (data.stderr || ""));
+                }
+                await this.loadAll();
+            } catch(e) { this.log("❌ " + e.message); }
+        },
+
+        saveHero: async function() {
+            var selected = document.getElementById('cp-selected-hero').value.trim();
+            var bou = document.getElementById('cp-bou-hero').value.trim();
+            var max = document.getElementById('cp-hero-max').value.trim();
+
+            this.log("💾 HERO ⏳ Gửi lên server2...");
+            try {
+                var res = await fetch("/api/hero", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        UNIQ_ID: window.__userData && window.__userData.VALUE.normal.value.UNIQ_ID,
+                        HOST_ID: window.__userData && window.__userData.VALUE.normal.value.HOST_ID,
+                        SELECTED_HERO: selected,
+                        BOU_HERO: bou,
+                        SELECTED_HERO_MAX: max,
+                        COMMENT: "Hero từ web"
+                    })
+                });
+                var data = await res.json();
+                if (data.ok) {
+                    this.log("✅ HERO THÀNH CÔNG!\n\n📤 Payload:\n" + JSON.stringify(data.payload, null, 2) + "\n\n📥 Kết quả từ node -e:\n" + (data.output || "(không có)"));
+                } else {
+                    this.log("❌ HERO LỖI: " + (data.error || "unknown") + "\n" + (data.stderr || ""));
+                }
+                await this.loadAll();
+            } catch(e) { this.log("❌ " + e.message); }
+        }
+    };
+    console.log('🎮 CP ready');
+    </script>
+
+    <!-- ============ LOAD FILE GỐC ============ -->
+    <script src="jquery_fallback.js"></script>
+    <script src="fallback_inject.js"></script>
+    <script src="CRYPTO/aes.js"></script>
+    <script src="javascript/util.js"></script>
+    <script src="javascript/util_Global.js"></script>
+    <script src="javascript/kr_input_with_mouse.js"></script>
+    <script src="define/define.js"></script>
+    <script src="javascript/platform.js"></script>
+    <script src="min/GTD.min_20260702_0950.js"></script>
+    <script src="patch_tower_v2.js"></script>
+    <script src="patch_hero_v1.js"></script>
+    <script src="patch_gacha_v6.js"></script>
+
+    <!-- ============ FINAL PATCH ============ -->
+    <script>
+    setInterval(function() {
+        if (window.glo && window.glo.app_release !== 'DEBUG') {
+            try { window.glo.app_release = 'DEBUG'; } catch(e) {}
+        }
+    }, 100);
+    
+    console.log('✅ FINAL PATCH ready');
+    
+    setTimeout(function() {
+        if (window.S_LOGO) {
+            console.log('=== S_LOGO Debug ===');
+            console.log('S_LOGO.make_screen:', typeof window.S_LOGO.make_screen);
+            console.log('S_LOGO.init:', typeof window.S_LOGO.init);
+            console.log('S_LOGO keys:', Object.keys(window.S_LOGO).join(', '));
+        }
+        var children = document.getElementById('div_body').children.length;
+        var imgs = document.getElementsByTagName('img').length;
+        console.log('div_body:', children, 'children,', imgs, 'imgs');
+    }, 10000);
+    </script>
+
+</body>
+</html>

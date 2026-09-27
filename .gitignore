@@ -1,0 +1,13 @@
+node_modules/
+*.log
+*.bak
+*.bak_*
+backup_*/
+logs/
+user_data.json
+bridge_decrypted.json
+config.json
+.env
+*.token
+image/
+image_cache/

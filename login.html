@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gold Tower Defense</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #0f0f23; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+        }
+        .login-container {
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #2a2a4a;
+            width: 380px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.05);
+        }
+        .login-title {
+            color: #ffd700;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .login-subtitle {
+            color: #8888aa;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: #2a2a4a;
+            border: 1px solid #3a3a5a;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+        .login-input::placeholder {
+            color: #666;
+        }
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: #ffd700;
+            color: #0f0f23;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .login-button:hover {
+            background: #ffed4a;
+            transform: scale(1.02);
+        }
+        .login-button:active {
+            transform: scale(0.98);
+        }
+        .login-error {
+            color: #ff4444;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+            padding: 10px;
+            background: rgba(255, 68, 68, 0.1);
+            border-radius: 8px;
+        }
+        .login-success {
+            color: #00cc88;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-title">🏰 GOLD TOWER</div>
+        <div class="login-subtitle">Đăng nhập để vào game</div>
+        
+        <input type="text" class="login-input" id="username" placeholder="👤 Username" value="GoldMaster">
+        <input type="password" class="login-input" id="password" placeholder="🔑 Password" value="123456">
+        
+        <button class="login-button" onclick="doLogin()">🚀 Đăng nhập</button>
+        
+        <div class="login-error" id="login-error">❌ Đăng nhập thất bại. Vui lòng thử lại.</div>
+        <div class="login-success" id="login-success">✅ Đăng nhập thành công! Đang chuyển hướng...</div>
+        
+        <a href="/" class="back-link">🏠 Về trang chủ</a>
+    </div>
+    
+    <script>
+        function doLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Ẩn thông báo cũ
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('login-success').style.display = 'none';
+            
+            if (!username || !password) {
+                document.getElementById('login-error').textContent = '❌ Vui lòng nhập username và password';
+                document.getElementById('login-error').style.display = 'block';
+                return;
+            }
+            
+            // Gửi request login
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Login response:', data);
+                if (data.status === 'success') {
+                    document.getElementById('login-success').style.display = 'block';
+                    // Chuyển đến game sau 1 giây
+                    setTimeout(() => {
+                        window.location.href = '/game.html';
+                    }, 1000);
+                } else {
+                    document.getElementById('login-error').textContent = '❌ ' + (data.message || 'Đăng nhập thất bại');
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error('Login error:', err);
+                document.getElementById('login-error').textContent = '❌ Lỗi kết nối server';
+                document.getElementById('login-error').style.display = 'block';
+            });
+        }
+        
+        // Enter để login
+        document.getElementById('password').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+        document.getElementById('username').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+    </script>
+</body>
+</html>
